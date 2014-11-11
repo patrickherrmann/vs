@@ -1,5 +1,5 @@
 var counties = require("./counties-geojson.json");
-var population = require("./public/county-populations");
+var population = require("./county-populations.json");
 var _ = require('underscore');
 
 var features = counties.features;
