@@ -1,0 +1,12 @@
+extends layout
+
+block scripts
+    script(src='/js/CountyMap.js')
+    script(src='/js/one-color.js')
+    script(src='/js/populationMap.js')
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  canvas#map-canvas(width='1200', height='800')
