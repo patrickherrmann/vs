@@ -3,6 +3,13 @@ var mercator = require('./mercator');
 var counties = require('../public/counties.json');
 var _ = require('underscore');
 
+/*
+ * This module stores all mercator-projected polygons
+ * in a quad tree. The quad tree can be queried to
+ * quickly find which county (if any) contains a GPS
+ * coordinate.
+ */
+
 var capacity = 3;
 
 function boxContains(coord, bb) {
