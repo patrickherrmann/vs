@@ -35,6 +35,7 @@ function mapGeometry(geometry) {
 var info = [];
 
 function saveFeature(feat) {
+    if (!population[feat.properties.GEO_ID]) return;
     info.push({
         id: feat.properties.GEO_ID,
         area: feat.properties.CENSUSAREA,
