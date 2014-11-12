@@ -1,22 +1,13 @@
 var counties = require("./counties-geojson.json");
 var population = require("./county-populations.json");
+var mercator = require('../reverse_geocoding/mercator');
 var _ = require('underscore');
 
 var features = counties.features;
 
-var tau = 6.2831853071;
-
-function mercator(point) {
-    var lng = point[0];
-    var lat = point[1];
-
-    lat = (360 / tau) * Math.log(Math.tan(lat / 180 * (tau / 4) + (tau / 8)));
-
-    return [lng, lat];
-}
-
 function project(polygon) {
-    // Ignore holes
+    // Ignore holes and remove redundant duplicate coordinate
+    polygon[0].pop();
     return _.map(polygon[0], function(coord) {
         return mercator(coord);
     });

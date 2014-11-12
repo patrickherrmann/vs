@@ -120,7 +120,7 @@ function CountyMap(canvas, callback) {
             var pixel = getPixel(view, polygon[0]);
             g.moveTo(pixel[0], pixel[1]);
 
-            for (var i = 1; i < polygon.length - 1; i++) {
+            for (var i = 1; i < polygon.length; i++) {
                 pixel = getPixel(view, polygon[i]);
                 g.lineTo(pixel[0], pixel[1]);
             }
