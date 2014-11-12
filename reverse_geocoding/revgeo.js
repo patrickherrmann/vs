@@ -3,12 +3,20 @@ var mercator = require('./mercator');
 var counties = require('../public/counties.json');
 var _ = require('underscore');
 
+function boxContains(coord, bb) {
+    return coord[0] > bb[0][0] &&
+        coord[0] < bb[1][0] &&
+        coord[1] > bb[0][1] &&
+        coord[0] < bb[1][1];
+}
+
 function getCounty(coord) {
     var projected = mercator(coord);
 
     var match = _.find(counties, function(county) {
         return _.any(county.polygons, function(polygon) {
-            return pip(projected, polygon);
+            return boxContains(projected, polygon.box) &&
+                pip(projected, polygon.exact);
         });
     });
 

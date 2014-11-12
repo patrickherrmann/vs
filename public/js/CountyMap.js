@@ -41,18 +41,18 @@ function CountyMap(canvas, callback) {
         var alaska = {
             renderBox: {
                 hi: {
-                    x: renderWidth * 0.25,
+                    x: renderWidth * 0.4,
                     y: renderHeight
                 },
                 lo: {
                     x: 0,
-                    y: renderHeight * 0.78
+                    y: renderHeight * 0.68
                 }
             },
             boundingBox: {
                 hi: {
-                    lng: -140,
-                    lat: 90
+                    lng: -118,
+                    lat: 100
                 },
                 lo: {
                     lng: -190,
@@ -113,28 +113,35 @@ function CountyMap(canvas, callback) {
         return [view.renderBox.lo.x + lngPixels, view.renderBox.hi.y - latPixels];
     }
 
-    function drawPolygon(polygon, fill, stroke) {
-        $.each(views, function(i, view) {
-            g.beginPath();
+    function inView(view, bb) {
+        var vbb = view.boundingBox;
 
-            var pixel = getPixel(view, polygon[0]);
-            g.moveTo(pixel[0], pixel[1]);
+        return bb[0][0] < vbb.hi.lng &&
+            bb[1][0] > vbb.lo.lng &&
+            bb[0][1] < vbb.hi.lat &&
+            bb[1][1] > vbb.lo.lat;
+    }
 
-            for (var i = 1; i < polygon.length; i++) {
-                pixel = getPixel(view, polygon[i]);
-                g.lineTo(pixel[0], pixel[1]);
-            }
+    function drawPolygon(view, polygon, fill, stroke) {
+        g.beginPath();
 
-            g.closePath();
+        var pixel = getPixel(view, polygon[0]);
+        g.moveTo(pixel[0], pixel[1]);
 
-            g.fillStyle = fill;
-            g.fill();
+        for (var i = 1; i < polygon.length; i++) {
+            pixel = getPixel(view, polygon[i]);
+            g.lineTo(pixel[0], pixel[1]);
+        }
 
-            if (stroke) {
-                g.strokeStyle = stroke;
-                g.stroke();
-            }
-        });
+        g.closePath();
+
+        g.fillStyle = fill;
+        g.fill();
+
+        if (stroke) {
+            g.strokeStyle = stroke;
+            g.stroke();
+        }
     }
 
     function drawCounties(options, coloration) {
@@ -149,9 +156,13 @@ function CountyMap(canvas, callback) {
             g.strokeRect(1, 1, renderWidth - 2, renderHeight - 2);
         }
 
-        $.each(counties, function(i, county) {
-            $.each(county.polygons, function(j, polygon) {
-                drawPolygon(polygon, coloration(county.id, county.pop, county.area), options.countyStroke);
+        $.each(views, function(i, view) {
+            $.each(counties, function(j, county) {
+                $.each(county.polygons, function(k, polygon) {
+                    if (inView(view, polygon.box)) {
+                        drawPolygon(view, polygon.exact, coloration(county.id, county.pop, county.area), options.countyStroke);
+                    }
+                });
             });
         });
     }
