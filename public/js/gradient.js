@@ -3,11 +3,16 @@
  * from the interval [0,1] and returns a color.
  */
 
+function constrain(value) {
+    if (value < 0) return 0;
+    if (value > 1) return 1;
+    return value;
+}
+
 function createGradient(colors) {
     return function(value) {
 
-        if (value < 0) value = 0;
-        if (value > 1) value = 1;
+        value = constrain(value);
 
         if (colors.length == 2) {
             var r0 = colors[0].red();
@@ -33,11 +38,13 @@ function createGradient(colors) {
 }
 
 function heatMap(value) {
+    value = constrain(value)
     return one.color('#e00')
         .hue(0.6 * (1 - value));
 }
 
 function createSaturationGradient(color) {
+    value = constrain(value)
     return function(value) {
         return color
             .value(0.8 - 0.3 * value)
