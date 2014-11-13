@@ -156,11 +156,13 @@ function CountyMap(canvas, callback) {
             g.strokeRect(1, 1, renderWidth - 2, renderHeight - 2);
         }
 
+        var colorFunction = coloration(counties);
+
         $.each(views, function(i, view) {
             $.each(counties, function(j, county) {
                 $.each(county.polygons, function(k, polygon) {
                     if (inView(view, polygon.box)) {
-                        drawPolygon(view, polygon.exact, coloration(county.id, county.pop, county.area), options.countyStroke);
+                        drawPolygon(view, polygon.exact, colorFunction(county.id), options.countyStroke);
                     }
                 });
             });
