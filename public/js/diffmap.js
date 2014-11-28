@@ -16,8 +16,8 @@ function drawMap(coloration) {
 }
 
 $(function() {
-    $.get('/walmarts.json', function(walmarts) {
-        $.get('/farmers-markets.json', function(markets) {
+    $.get('/data/walmarts.json', function(walmarts) {
+        $.get('/data/farmers-markets.json', function(markets) {
             function coloration(counties) {
 
                 var max = null;
