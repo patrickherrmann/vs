@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var stylus = require('stylus');
 var nib = require('nib');
 var mongoose = require('mongoose');
+var collectors = require('./collectors');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -67,6 +68,8 @@ app.use(function(req, res, next) {
     next(err);
 });
 
+collectors.start();
+
 // error handlers
 
 // development error handler
@@ -90,6 +93,5 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-
 
 module.exports = app;

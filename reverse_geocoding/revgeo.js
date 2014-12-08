@@ -1,6 +1,6 @@
 var pip = require('point-in-polygon');
 var mercator = require('./mercator');
-var counties = require('../public/counties.json');
+var counties = require('../public/data/counties.json');
 var _ = require('underscore');
 
 /*

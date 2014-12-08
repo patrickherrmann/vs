@@ -3,7 +3,8 @@ var twitter = require('twitter'),
     _ = require('underscore'),
     util = require('util'),
     Collection = require('./models/Collection'),
-    Tweet = require('./models/Tweet');
+    Tweet = require('./models/Tweet'),
+    revgeo = require('./reverse_geocoding/revgeo.js');
 
 var twit = new twitter({
     consumer_key: process.env.TWITTER_API_CONSUMER_KEY,
@@ -33,15 +34,20 @@ function processTweet(tweet, collection) {
     var lat = loc[1],
         lng = loc[0];
 
-    saveTweet({
-        text: tweet.text,
-        username: tweet.user.name,
-        lat: lat,
-        lng: lng,
-        created_at: tweet.created_at,
-        id_str: tweet.id_str,
-        collection_id: collection._id
-    });
+    var county_id = revgeo(loc);
+
+    if (county_id) {
+        saveTweet({
+            text: tweet.text,
+            username: tweet.user.name,
+            lat: lat,
+            lng: lng,
+            created_at: tweet.created_at,
+            id_str: tweet.id_str,
+            collection_id: collection._id,
+            county_id: county_id
+        });
+    }
 }
 
 function adjustCollectionRate() {
