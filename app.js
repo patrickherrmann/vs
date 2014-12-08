@@ -6,11 +6,28 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var stylus = require('stylus');
 var nib = require('nib');
+var mongoose = require('mongoose');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+// Set up mongoose
+var mongo = process.env.MONGODB;
+if (mongo == undefined) {
+    throw "Database undefined. Add MONGODB environment variable.";
+}
+
+var mongoUri = "mongodb://localhost/" + mongo;
+
+mongoose.connect(mongoUri, function(err, res) {
+    if (err) {
+        console.log('ERROR connecting to: ' + mongoUri + '. ' + err);
+    } else {
+        console.log('Succeeded connecting to: ' + mongoUri);
+    }
+});
 
 // serve public folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -29,7 +46,7 @@ app.use(stylus.middleware({
     }
 }));
 
-// Add favicon
+// add favicon
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 app.use(logger('dev'));
