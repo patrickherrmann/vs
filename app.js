@@ -4,8 +4,6 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var stylus = require('stylus');
-var nib = require('nib');
 var mongoose = require('mongoose');
 var collectors = require('./twitter/collectors');
 
@@ -30,20 +28,6 @@ mongoose.connect(mongoUri, function(err, res) {
 // serve public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-// setup stylus
-app.use(stylus.middleware({
-    src: path.join(__dirname, 'public'),
-    compile: function(str, path) {
-        return stylus(str)
-            .set('filename', path)
-            .use(nib());
-    }
-}));
-
 // add favicon
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
@@ -56,7 +40,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Bind routes
-app.use('/', require('./routes/index'));
 app.use('/api/collections/', require('./routes/api/collections'));
 
 // catch 404 and forward to error handler
