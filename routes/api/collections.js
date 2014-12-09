@@ -6,40 +6,60 @@ var mongoose = require('mongoose');
 var Collection = require('../../models/Collection');
 var Tweet = require('../../models/Tweet');
 var ObjectId = mongoose.Types.ObjectId;
+var async = require('async');
 
-router.get('/', function(req, res) {
-    Collection.find({}, function(err, docs) {
-
+function handleError(res, callback) {
+    return function(err, results) {
         if (err) {
             res.send(err);
         } else {
-            res.json(docs);
+            callback(results);
         }
-    });
+    };
+}
+
+function bindExec(query) {
+    return query.exec.bind(query);
+}
+
+router.get('/', function(req, res) {
+
+    var success = res.json.bind(res);
+
+    Collection.find({}, handleError(res, success));
 });
 
 router.post('/', function(req, res) {
+
     var newCollection = new Collection(req.body);
-    newCollection.save(function(err) {
-        if (err) {
-            res.send(err);
-        } else {
-            collectors.add(newCollection);
-            res.send(newCollection);
-        }
-    });
+
+    var success = function(results) {
+        collectors.add(newCollection);
+        res.send(newCollection);
+    };
+
+    newCollection.save(handleError(res, success));
 });
 
-
-
 router.get('/:id', function(req, res) {
-    Collection.findById(req.params.id, function(err, doc) {
-        if (err) {
-            res.send(err);
-        } else {
-            res.json(doc);
-        }
-    });
+    var id = req.params.id;
+
+    var tasks = {
+        info: bindExec(Collection.findById(id)),
+        count: bindExec(Tweet.count({
+            collection_id: ObjectId(id)
+        }))
+    };
+
+    var success = function(results) {
+        var obj = {};
+        obj.name = results.info.name;
+        obj.query = results.info.query;
+        obj.count = results.count;
+        res.json(obj);
+    };
+
+    async.parallel(tasks, handleError(res, success));
 });
 
 function createGeoJson(tweets) {
@@ -64,15 +84,12 @@ function createGeoJson(tweets) {
 }
 
 router.get('/:id/geojson', function(req, res) {
+
+    var success = _.compose(res.json.bind(res), createGeoJson);
+
     Tweet.find({
         collection_id: ObjectId(req.params.id)
-    }, function(err, tweets) {
-        if (err) {
-            res.send(err);
-        } else {
-            res.json(createGeoJson(tweets));
-        }
-    });
+    }, handleError(res, success));
 });
 
 function createCountyLookup(counties) {
@@ -86,6 +103,9 @@ function createCountyLookup(counties) {
 }
 
 router.get('/:id/counties', function(req, res) {
+
+    var success = _.compose(res.json.bind(res), createCountyLookup);
+
     Tweet.aggregate([{
         $match: {
             collection_id: ObjectId(req.params.id)
@@ -97,45 +117,36 @@ router.get('/:id/counties', function(req, res) {
                 $sum: 1
             }
         }
-    }], function(err, counties) {
-        if (err) {
-            res.send(err);
-        } else {
-            res.json(createCountyLookup(counties));
-        }
-    });
+    }], handleError(res, success));
 });
 
 router.put('/:id', function(req, res) {
-    Collection.findByIdAndUpdate(req.params.id, req.body, function(err) {
-        if (err) {
-            res.send(err);
-        } else {
-            res.json({
-                message: 'Updated collection'
-            });
-        }
-    });
+
+    var success = function() {
+        res.json({
+            message: 'Updated collection'
+        });
+    };
+
+    Collection.findByIdAndUpdate(req.params.id, req.body, handleError(res, success));
 });
 
 router.delete('/:id', function(req, res) {
-    Tweet.remove({
-        collection_id: ObjectId(req.params.id)
-    }, function(err) {
-        if (err) {
-            res.send(err);
-        } else {
-            Collection.findByIdAndRemove(req.params.id, function(err) {
-                if (err) {
-                    res.send(err);
-                } else {
-                    res.json({
-                        message: 'Deleted collection'
-                    });
-                }
-            });
-        }
-    });
+
+    var tasks = {
+        removeTweets: bindExec(Tweet.remove({
+            collection_id: ObjectId(req.params.id)
+        })),
+        removeCollection: bindExec(Collection.findByIdAndRemove(req.params.id))
+    };
+
+    var success = function(results) {
+        res.json({
+            message: 'Deleted collection'
+        });
+    };
+
+    async.series(tasks, handleError(res, success));
 });
 
 module.exports = router;

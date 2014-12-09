@@ -1,5 +1,3 @@
-//var gradient = createSaturationGradient(one.color('#0f0'));
-//var gradient = heatMap;
 var gradient = createGradient([
     one.color('#f00'),
     one.color('#ccc'),
