@@ -6,7 +6,10 @@ var schema = new mongoose.Schema({
     lat: Number,
     lng: Number,
     created_at: Date,
-    id_str: String,
+    id_str: {
+        type: String,
+        unique: true
+    },
     collection_id: mongoose.Schema.Types.ObjectId,
     county_id: String
 });

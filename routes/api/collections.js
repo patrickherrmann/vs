@@ -75,7 +75,17 @@ router.get('/:id/geojson', function(req, res) {
     });
 });
 
-router.get('/:id/geochart', function(req, res) {
+function createCountyLookup(counties) {
+    var lookup = {};
+
+    _.each(counties, function(county) {
+        lookup[county._id] = county.count;
+    });
+
+    return lookup;
+}
+
+router.get('/:id/counties', function(req, res) {
     Tweet.aggregate([{
         $match: {
             collection_id: ObjectId(req.params.id)
@@ -91,7 +101,7 @@ router.get('/:id/geochart', function(req, res) {
         if (err) {
             res.send(err);
         } else {
-            res.json(counties);
+            res.json(createCountyLookup(counties));
         }
     });
 });
