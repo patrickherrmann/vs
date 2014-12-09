@@ -1,7 +1,7 @@
 var gradient = createGradient([
-    one.color('#f00'),
+    one.color('#f40'),
     one.color('#ccc'),
-    one.color('#00f')
+    one.color('#04f')
 ]);
 
 function createColoration(as, bs, k) {

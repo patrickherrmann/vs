@@ -30,7 +30,9 @@ function unknownError(res) {
 }
 
 function notFound(res) {
-    res.status(404).send('Collection not found');
+    res.status(404).json({
+        error: 'Collection not found'
+    });
 }
 
 function bindExec(query) {
@@ -59,9 +61,9 @@ router.post('/', function(req, res) {
 router.get('/:id', function(req, res) {
     var id = req.params.id;
 
-    var queries = {
-        coll: Collection.findById(id),
-        stats: Tweet.aggregate([{
+    var tasks = {
+        coll: bindExec(Collection.findById(id)),
+        stats: bindExec(Tweet.aggregate([{
             $match: {
                 collection_id: ObjectId(id)
             }
@@ -82,13 +84,8 @@ router.get('/:id', function(req, res) {
                     $sum: 1
                 }
             }
-        }])
+        }]))
     };
-
-    var tasks = {};
-    _.each(queries, function(v, k) {
-        tasks[k] = bindExec(v);
-    });
 
     var success = function(results) {
 
@@ -98,6 +95,14 @@ router.get('/:id', function(req, res) {
         }
 
         var stats = results.stats[0];
+
+        if (!stats) {
+            stats = {
+                count: 0,
+                from: null,
+                to: null
+            };
+        }
 
         res.json({
             _id: results.coll._id,
@@ -174,7 +179,15 @@ router.get('/:id/counties', function(req, res) {
 
 router.put('/:id', function(req, res) {
 
-    var success = res.json.bind(res);
+    var success = function(updated) {
+
+        if (!updated) {
+            notFound(res);
+            return;
+        }
+
+        res.json(updated);
+    };
 
     Collection.findByIdAndUpdate(req.params.id, req.body, handle(success, unknownError(res)));
 });
@@ -188,10 +201,14 @@ router.delete('/:id', function(req, res) {
         removeCollection: bindExec(Collection.findByIdAndRemove(req.params.id))
     };
 
-    var success = function() {
-        res.json({
-            message: 'Deleted collection'
-        });
+    var success = function(results) {
+
+        if (!results.removeCollection) {
+            notFound(res);
+            return;
+        }
+
+        res.json(results.removeCollection);
     };
 
     async.series(tasks, handle(success, unknownError(res)));
