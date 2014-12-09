@@ -6,7 +6,6 @@ var Collection = require('../../models/Collection');
 var Tweet = require('../../models/Tweet');
 var ObjectId = mongoose.Types.ObjectId;
 var async = require('async');
-var extend = require('node.extend');
 
 var router = express.Router();
 
