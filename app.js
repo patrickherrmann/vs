@@ -7,10 +7,7 @@ var bodyParser = require('body-parser');
 var stylus = require('stylus');
 var nib = require('nib');
 var mongoose = require('mongoose');
-var collectors = require('./collectors');
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
+var collectors = require('./twitter/collectors');
 
 var app = express();
 
@@ -58,8 +55,9 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+// Bind routes
+app.use('/', require('./routes/index'));
+app.use('/api/collections/', require('./routes/api/collections'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

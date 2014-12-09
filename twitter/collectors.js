@@ -2,9 +2,9 @@ var twitter = require('twitter'),
     collector = require('./collector'),
     _ = require('underscore'),
     util = require('util'),
-    Collection = require('./models/Collection'),
-    Tweet = require('./models/Tweet'),
-    revgeo = require('./reverse_geocoding/revgeo.js');
+    Collection = require('../models/Collection'),
+    Tweet = require('../models/Tweet'),
+    revgeo = require('../reverse_geocoding/revgeo.js');
 
 var twit = new twitter({
     consumer_key: process.env.TWITTER_API_CONSUMER_KEY,
@@ -54,7 +54,7 @@ function adjustCollectionRate() {
     var apiWindow = 15 * 60;
     var maxRequests = 170;
 
-    var pollLength = (apiWindow / maxRequests) / collectors.length;
+    var pollLength = (apiWindow / maxRequests) * collectors.length;
 
     _.each(collectors, function(c) {
         c.collection.pollLength = pollLength;
