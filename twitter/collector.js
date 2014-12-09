@@ -1,5 +1,5 @@
 var _ = require('underscore')
-extend = require('extend');
+extend = require('node.extend');
 
 function Collector(twitter, collection, tweetHandler, errorHandler) {
 

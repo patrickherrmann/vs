@@ -49,9 +49,9 @@ function drawMap(coloration) {
 }
 
 $(function() {
-    $.get('/data/walmarts.json', function(walmarts) {
-        $.get('/data/farmers-markets.json', function(markets) {
-            drawMap(createColoration(walmarts, markets, 0.3));
+    $.get('/api/collections/548656d4003cac2766e962c6/counties', function(as) {
+        $.get('/api/collections/5486459bc90d6a0b61f9359b/counties', function(bs) {
+            drawMap(createColoration(as, bs, 0.3));
         });
     });
 });

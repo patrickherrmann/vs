@@ -5,7 +5,11 @@ var schema = new mongoose.Schema({
         type: String,
         unique: true
     },
-    query: String
+    query: String,
+    __v: {
+        type: Number,
+        select: false
+    }
 });
 
 module.exports = mongoose.model('collections', schema);
