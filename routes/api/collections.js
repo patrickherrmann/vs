@@ -21,7 +21,7 @@ function handle(success, failure) {
 
 function unknownError(res) {
     return function(err) {
-        console.err(err);
+        console.error(err);
         res.json({
             error: 'An unknown error occurred'
         });
@@ -38,11 +38,12 @@ function bindExec(query) {
     return query.exec.bind(query);
 }
 
+function sendCollections(res) {
+    Collection.find({}, handle(res.json.bind(res), unknownError(res)));
+}
+
 router.get('/', function(req, res) {
-
-    var success = res.json.bind(res);
-
-    Collection.find({}, handle(success, unknownError(res)));
+    sendCollections(res);
 });
 
 router.post('/', function(req, res) {
@@ -51,7 +52,7 @@ router.post('/', function(req, res) {
 
     var success = function() {
         collectors.add(newCollection);
-        res.send(newCollection);
+        sendCollections(res);
     };
 
     newCollection.save(handle(success, unknownError(res)));
@@ -185,7 +186,7 @@ router.put('/:id', function(req, res) {
             return;
         }
 
-        res.json(updated);
+        sendCollections(res);
     };
 
     Collection.findByIdAndUpdate(req.params.id, req.body, handle(success, unknownError(res)));
@@ -207,7 +208,7 @@ router.delete('/:id', function(req, res) {
             return;
         }
 
-        res.json(results.removeCollection);
+        sendCollections(res);
     };
 
     async.series(tasks, handle(success, unknownError(res)));
