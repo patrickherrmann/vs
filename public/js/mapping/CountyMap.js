@@ -5,7 +5,6 @@ function CountyMap(canvas, callback) {
     var renderWidth = canvas.offsetWidth;
     var renderHeight = canvas.offsetHeight;
     var views;
-    var counties;
 
     var defaultOptions = {
         backgroundFill: '#eee',
@@ -93,12 +92,12 @@ function CountyMap(canvas, callback) {
             views[i].pixelHeight = (view.boundingBox.hi.lat - view.boundingBox.lo.lat) / views[i].height;
         });
 
-        if (counties) {
-            callback();
+        if (CountyMap.counties) {
+            callback(self);
         } else {
             $.get('/data/counties.json', function(countyData) {
-                counties = countyData;
-                callback();
+                CountyMap.counties = countyData;
+                callback(self);
             });
         }
     }
@@ -160,10 +159,10 @@ function CountyMap(canvas, callback) {
             g.strokeRect(1, 1, renderWidth - 2, renderHeight - 2);
         }
 
-        var colorFunction = coloration(counties);
+        var colorFunction = coloration(CountyMap.counties);
 
         $.each(views, function(i, view) {
-            $.each(counties, function(j, county) {
+            $.each(CountyMap.counties, function(j, county) {
                 $.each(county.polygons, function(k, polygon) {
                     if (inView(view, polygon.box)) {
                         drawPolygon(view, polygon.exact, colorFunction(county.id), options.countyStroke);
