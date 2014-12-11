@@ -4,9 +4,21 @@ vsControllers.controller('CollectionListCtrl', ['$scope', '$http', function($sco
     $http.get('/api/collections').success(function(data) {
         $scope.collections = data;
     });
+
+    $scope.createNewCollection = function() {
+        var body = {
+            name: $scope.newCollectionName,
+            query: $scope.newCollectionName
+        };
+
+        $http.post('/api/collections/', body).success(function(data) {
+            $scope.collections = data;
+            $scope.newCollectionName = '';
+        });
+    };
 }]);
 
-vsControllers.controller('CollectionDetailCtrl', ['$scope', '$http', '$routeParams', '$q', function($scope, $http, $routeParams, $q) {
+vsControllers.controller('CollectionDetailCtrl', ['$scope', '$http', '$routeParams', '$q', '$window', function($scope, $http, $routeParams, $q, $window) {
 
     var getDetails = $http.get('/api/collections/' + $routeParams.collectionId);
     getDetails.then(function(payload) {
@@ -62,4 +74,20 @@ vsControllers.controller('CollectionDetailCtrl', ['$scope', '$http', '$routePara
             };
         });
     }
+
+    $scope.deleting = false;
+
+    $scope.startDeletion = function() {
+        $scope.deleting = true;
+    };
+
+    $scope.cancelDeletion = function() {
+        $scope.deleting = false;
+    }
+
+    $scope.reallyDelete = function() {
+        $http.delete('/api/collections/' + $scope.collection._id).success(function(data) {
+            $window.location.href = '/#/collections';
+        });
+    };
 }]);

@@ -1,3 +1,13 @@
+<form class="form-inline" role="form" ng-submit="createNewCollection()">
+    <div class="form-group">
+        <label class="sr-only" for="newCollectionName">New Collection</label>
+        <input ng-model="newCollectionName" type="text" class="form-control" id="newCollectionName" placeholder="New Collection">
+    </div>
+    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create</button>
+</form>
+
+<hr>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">Collections</h3>
