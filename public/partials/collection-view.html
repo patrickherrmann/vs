@@ -2,11 +2,12 @@
     The {{collection.name}} collection has been searching "{{collection.query}}" on Twitter since {{collection.from | date:'MM/dd/yyyy'}}. So far, it's collected {{collection.count}} geotagged tweets.
 </p>
 
-<button ng-show="!deleting" ng-click="startDeletion()" class="btn">Delete Collection</button>
-<div ng-show="deleting">
-    <p>Delete this collection?</p>
-    <button ng-click="cancelDeletion()" class="btn">Cancel</button>
-    <button ng-click="reallyDelete()" class="btn btn-danger">Delete</button>
+
+
+<button ng-show="!deleting" ng-click="startDeletion()" class="btn btn-default">Delete Collection</button>
+<div ng-show="deleting" class="btn-group" role="group">
+    <button ng-click="cancelDeletion()" class="btn btn-default" type="button">Cancel</button>
+    <button ng-click="reallyDelete()" class="btn btn-danger" type="button">Delete Collection</button>
 </div>
 
 

@@ -66,10 +66,18 @@ vsControllers.controller('CollectionDetailCtrl', ['$scope', '$http', '$routePara
                 }
             });
 
+
+
             return function(county) {
                 var pc = perCap[county];
-                var v = pc / max;
-                v = Math.pow(v, $scope.contrast);
+                var v;
+                if (max) {
+                    v = pc / max;
+                    v = Math.pow(v, $scope.contrast);
+                    v = Math.pow(v, $scope.contrast);
+                } else {
+                    v = 0;
+                }
                 return one.color('#00c').saturation(v).hex();
             };
         });
