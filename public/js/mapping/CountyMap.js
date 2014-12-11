@@ -93,10 +93,14 @@ function CountyMap(canvas, callback) {
             views[i].pixelHeight = (view.boundingBox.hi.lat - view.boundingBox.lo.lat) / views[i].height;
         });
 
-        $.get('/data/counties.json', function(countyData) {
-            counties = countyData;
+        if (counties) {
             callback();
-        });
+        } else {
+            $.get('/data/counties.json', function(countyData) {
+                counties = countyData;
+                callback();
+            });
+        }
     }
 
     function getPixel(view, coord) {

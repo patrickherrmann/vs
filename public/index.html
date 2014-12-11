@@ -1,35 +1,47 @@
 <!DOCTYPE html>
-  <html data-ng-app>
-  <head lang="en">
+<html data-ng-app="vs">
+
+<head lang="en">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <base href="/"/>
+    <base href="/" />
     <title>VS</title>
-    <link rel="stylesheet" type="text/css" href="components/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="css/vs.css"/>
-  </head>
-  <body>
+    <link rel="stylesheet" type="text/css" href="components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/vs.css" />
+</head>
+
+<body>
     <nav class="navbar navbar-default" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">VS</a>
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">VS</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Home</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-          </ul>
-        </div>
-      </div>
     </nav>
     <div class="container">
-      <div class="row top-buffer">
-        <div class="col-xs-8 col-xs-offset-2">
-          <div>
-            {{1 + 1}}
-          </div>
+        <div class="row top-buffer">
+            <div class="col-xs-8 col-xs-offset-2">
+                <div ng-controller="CollectionListCtrl">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Collections</h3>
+                        </div>
+                        <div class="list-group">
+                            <a href="#" class="list-group-item" ng-repeat="collection in collections">
+                          {{collection.name}}
+                        </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
     <script type="text/javascript" src="components/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="components/bootstrap/dist/js/bootstrap.js"></script>
@@ -39,5 +51,6 @@
     <script type="text/javascript" src="js/services.js"></script>
     <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js"></script>
     <script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>
-  </body>
+</body>
+
 </html>
