@@ -3,3 +3,9 @@
     height: 100px;
     text-overflow: ellipsis;
 }
+#left-select {
+    box-shadow: 0 0 3px #02f;
+}
+#right-select {
+    box-shadow: 0 0 3px #f20;
+}
