@@ -23,6 +23,7 @@ vsControllers.controller('CollectionDetailCtrl', ['$scope', '$http', '$routePara
     var getDetails = $http.get('/api/collections/' + $routeParams.collectionId);
     getDetails.then(function(payload) {
         $scope.collection = payload.data;
+        drawBrowseMap();
     });
 
     var getCounties = $http.get('/api/collections/' + $routeParams.collectionId + '/counties');
@@ -66,8 +67,6 @@ vsControllers.controller('CollectionDetailCtrl', ['$scope', '$http', '$routePara
                 }
             });
 
-
-
             return function(county) {
                 var pc = perCap[county];
                 var v;
@@ -80,6 +79,44 @@ vsControllers.controller('CollectionDetailCtrl', ['$scope', '$http', '$routePara
                 }
                 return one.color('#00c').saturation(v).hex();
             };
+        });
+    }
+
+    function drawBrowseMap() {
+        var mapDiv = document.getElementById('browse-map');
+
+        var options = {
+            zoom: 4,
+            center: {
+                lat: 39.683549,
+                lng: -97.440123
+            },
+            panControl: false,
+            zoomControl: false,
+            streetViewControl: false
+        };
+
+
+
+        var map = new google.maps.Map(mapDiv, options);
+
+        map.data.setStyle(function(feature) {
+            return {
+                icon: "https://maps.gstatic.com/intl/en_us/mapfiles/markers2/measle_blue.png",
+                visible: true,
+                clickable: true
+            };
+        });
+
+        map.data.loadGeoJson('/api/collections/' + $scope.collection._id + '/geojson');
+
+        map.data.addListener('mouseover', function(event) {
+            var text = event.feature.getProperty('text');
+            var username = event.feature.getProperty('username');
+
+            var $infoBox = $('#info-box');
+            $infoBox.find('.text').text(text);
+            $infoBox.find('.username').text(username);
         });
     }
 
