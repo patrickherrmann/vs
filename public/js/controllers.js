@@ -121,6 +121,11 @@ vsControllers.controller('VsCtrl', ['$scope', '$http', '$q', function($scope, $h
 
     $http.get('api/collections').success(function(data) {
         $scope.collections = data;
+
+        if (data.length < 2) {
+            return;
+        }
+
         $scope.left = $scope.collections[0];
         $scope.right = $scope.collections[1];
 
@@ -141,9 +146,9 @@ vsControllers.controller('VsCtrl', ['$scope', '$http', '$q', function($scope, $h
     });
 
     var gradient = createGradient([
-        one.color('#f20'),
+        one.color('#02f'),
         one.color('#ccc'),
-        one.color('#02f')
+        one.color('#f20')
     ]);
 
     function createColoration(as, bs, k) {
@@ -180,7 +185,7 @@ vsControllers.controller('VsCtrl', ['$scope', '$http', '$q', function($scope, $h
                     v = sign * Math.pow(magn, k);
                     v = v * 0.5 + 0.5;
                 } else {
-                    v = 0;
+                    v = 0.5;
                 }
 
                 return gradient(v).hex();

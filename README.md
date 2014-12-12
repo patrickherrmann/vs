@@ -1,8 +1,4 @@
-Renders US maps by county like so:
+VS
+----------------
 
-**Farmer's Markets vs. Walmarts**
-![Farmer's Markets vs. Walmarts](http://i.imgur.com/UdrEnYS.png?1)
-
-Maps are rendered on an html canvas. County borders, populations, and areas come from the US census bureau.
-
-Longitude/latitude pairs can be reverse geocoded to retrieve the containing county without the use of external APIs.
+This project allows you to poll Twitter for geotagged tweets mentioning certain topics. It then allows you to pair up topics and visualize which topic gets more mentions on a county level basis.

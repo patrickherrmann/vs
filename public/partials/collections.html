@@ -6,15 +6,17 @@
     <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create</button>
 </form>
 
-<hr>
+<div ng-show="collections.length > 0">
+    <hr>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Collections</h3>
-    </div>
-    <div class="list-group">
-        <a href="#/collections/{{collection._id}}" class="list-group-item" ng-repeat="collection in collections">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Collections</h3>
+        </div>
+        <div class="list-group">
+            <a href="#/collections/{{collection._id}}" class="list-group-item" ng-repeat="collection in collections">
           {{collection.name}}
         </a>
+        </div>
     </div>
 </div>
