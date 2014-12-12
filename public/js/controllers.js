@@ -6,6 +6,9 @@ vsControllers.controller('CollectionListCtrl', ['$scope', '$http', function($sco
     });
 
     $scope.createNewCollection = function() {
+
+        if (!$scope.newCollectionName) return;
+
         var body = {
             name: $scope.newCollectionName,
             query: $scope.newCollectionName
@@ -233,9 +236,7 @@ vsControllers.controller('VsCtrl', ['$scope', '$http', '$q', function($scope, $h
 
     $scope.drawMap = function() {
         var coloration = createColoration($scope.leftCounties, $scope.rightCounties, $scope.k);
-        $scope.map.draw({
-            countyStroke: '#aaa'
-        }, coloration);
+        $scope.map.draw({}, coloration);
     };
 
     $scope.changeLeft = function() {
