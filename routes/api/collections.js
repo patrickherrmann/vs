@@ -194,11 +194,13 @@ router.put('/:id', function(req, res) {
 
 router.delete('/:id', function(req, res) {
 
+    var id = req.params.id;
+
     var tasks = {
         removeTweets: bindExec(Tweet.remove({
-            collection_id: ObjectId(req.params.id)
+            collection_id: ObjectId(id)
         })),
-        removeCollection: bindExec(Collection.findByIdAndRemove(req.params.id))
+        removeCollection: bindExec(Collection.findByIdAndRemove(id))
     };
 
     var success = function(results) {
@@ -207,6 +209,8 @@ router.delete('/:id', function(req, res) {
             notFound(res);
             return;
         }
+
+        collectors.remove(id);
 
         sendCollections(res);
     };

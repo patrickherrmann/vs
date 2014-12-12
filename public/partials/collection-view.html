@@ -1,8 +1,18 @@
-<p>
-    The {{collection.name}} collection has been searching "{{collection.query}}" on Twitter since {{collection.from | date:'MM/dd/yyyy'}}. So far, it's collected {{collection.count}} geotagged tweets.
-</p>
+<ol class="breadcrumb">
+    <li>
+        <a href="/#/collections">Collections</a>
+    </li>
+    <li class="active">{{collection.name}}</li>
+</ol>
 
+<h2>{{collection.name}}</h2>
 
+<dl class="dl-horizontal">
+    <dt>Started</dt>
+    <dd>{{collection.from | date:'MM/dd/yyyy'}}</dd>
+    <dt>Count</dt>
+    <dd>{{collection.count}}</dd>
+</dl>
 
 <button ng-show="!deleting" ng-click="startDeletion()" class="btn btn-default">Delete Collection</button>
 <div ng-show="deleting" class="btn-group" role="group">

@@ -1,0 +1,17 @@
+<div class="row">
+    <div class="col-xs-3">
+        <select ng-model="left" ng-options="collection.name for collection in collections" class="form-control" ng-change="changeLeft()">
+        </select>
+    </div>
+    <div class="col-xs-6">
+
+    </div>
+    <div class="col-xs-3">
+        <select ng-model="right" ng-options="collection.name for collection in collections" class="form-control" ng-change="changeRight()">
+        </select>
+    </div>
+</div>
+
+<hr>
+
+<canvas id="diff-map" width="800" height="600">

@@ -56,6 +56,8 @@ function adjustCollectionRate() {
 
     var pollLength = (apiWindow / maxRequests) * collectors.length;
 
+    console.log('Poll length: ' + pollLength);
+
     _.each(collectors, function(c) {
         c.collection.pollLength = pollLength;
     });
@@ -74,6 +76,20 @@ function add(collection) {
     adjustCollectionRate();
 }
 
+function remove(id) {
+    var coll = _.find(collectors, function(c) {
+        return c.collection._id == id;
+    });
+    if (!coll) return;
+    coll.stop();
+
+    collectors = _.filter(collectors, function(c) {
+        return c.collection._id != id;
+    });
+
+    adjustCollectionRate();
+}
+
 function start() {
     Collection.find(function(err, collections) {
         if (err) throw "Failed to find collections";
@@ -83,4 +99,5 @@ function start() {
 
 exports.add = add;
 exports.start = start;
+exports.remove = remove;
 exports.collectors = collectors;

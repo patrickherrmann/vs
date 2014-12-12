@@ -11,7 +11,7 @@ vsControllers.controller('CollectionListCtrl', ['$scope', '$http', function($sco
             query: $scope.newCollectionName
         };
 
-        $http.post('/api/collections/', body).success(function(data) {
+        $http.post('/api/collections', body).success(function(data) {
             $scope.collections = data;
             $scope.newCollectionName = '';
         });
@@ -91,11 +91,122 @@ vsControllers.controller('CollectionDetailCtrl', ['$scope', '$http', '$routePara
 
     $scope.cancelDeletion = function() {
         $scope.deleting = false;
-    }
+    };
 
     $scope.reallyDelete = function() {
         $http.delete('/api/collections/' + $scope.collection._id).success(function(data) {
             $window.location.href = '/#/collections';
         });
     };
+}]);
+
+vsControllers.controller('VsCtrl', ['$scope', '$http', '$q', function($scope, $http, $q) {
+
+    $scope.k = 0.3;
+
+    var initMap = $q.defer();
+
+    var canvas = document.getElementById('diff-map');
+    new CountyMap(canvas, function(map) {
+        initMap.resolve(map);
+    });
+
+    initMap.promise.then(function(map) {
+        $scope.map = map;
+    });
+
+    function loadCounties(collection) {
+        return $http.get('api/collections/' + collection._id + '/counties');
+    }
+
+    $http.get('api/collections').success(function(data) {
+        $scope.collections = data;
+        $scope.left = $scope.collections[0];
+        $scope.right = $scope.collections[1];
+
+        var loadLeftCounties = loadCounties($scope.left);
+        var loadRightCounties = loadCounties($scope.right);
+
+        loadLeftCounties.then(function(payload) {
+            $scope.leftCounties = payload.data;
+        });
+
+        loadRightCounties.then(function(payload) {
+            $scope.rightCounties = payload.data;
+        });
+
+        $q.all([initMap.promise, loadLeftCounties, loadRightCounties]).then(function() {
+            $scope.drawMap();
+        })
+    });
+
+    var gradient = createGradient([
+        one.color('#f20'),
+        one.color('#ccc'),
+        one.color('#02f')
+    ]);
+
+    function createColoration(as, bs, k) {
+        return function(counties) {
+
+            var max = null;
+            var mapping = {};
+
+            $.each(counties, function(i, county) {
+                var a = as[county.id];
+                if (!a) a = 0;
+
+                var b = bs[county.id];
+                if (!b) b = 0;
+
+                var diff = b - a;
+                var magn = Math.abs(diff);
+
+                if (!max || magn > max) {
+                    max = magn;
+                }
+
+                mapping[county.id] = diff;
+            });
+
+            return function(id) {
+                var v;
+
+                if (max) {
+                    v = mapping[id];
+                    v = v / max;
+                    var magn = Math.abs(v);
+                    var sign = v < 0 ? -1 : 1;
+                    v = sign * Math.pow(magn, k);
+                    v = v * 0.5 + 0.5;
+                } else {
+                    v = 0;
+                }
+
+                return gradient(v).hex();
+            };
+        };
+    }
+
+
+    $scope.drawMap = function() {
+        var coloration = createColoration($scope.leftCounties, $scope.rightCounties, $scope.k);
+        $scope.map.draw({
+            countyStroke: '#aaa'
+        }, coloration);
+    };
+
+    $scope.changeLeft = function() {
+        loadCounties($scope.left).success(function(data) {
+            $scope.leftCounties = data;
+            $scope.drawMap();
+        });
+    }
+
+    $scope.changeRight = function() {
+        loadCounties($scope.right).success(function(data) {
+            $scope.rightCounties = data;
+            $scope.drawMap();
+        });
+    }
 }]);

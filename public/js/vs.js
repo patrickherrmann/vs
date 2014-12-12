@@ -13,7 +13,11 @@ vs.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'partials/collection-view.html',
             controller: 'CollectionDetailCtrl'
         })
+        .when('/vs', {
+            templateUrl: 'partials/vs.html',
+            controller: 'VsCtrl'
+        })
         .otherwise({
-            redirectTo: '/collections'
+            redirectTo: '/vs'
         });
 }]);
