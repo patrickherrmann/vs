@@ -13,6 +13,8 @@ var twit = new twitter({
     access_token_secret: process.env.TWITTER_API_ACCESS_TOKEN_SECRET
 });
 
+var apiWindow = 15 * 60;
+var maxRequests = 170;
 var collectors = [];
 
 var handleError = _.compose(console.error, util.inspect);
@@ -51,8 +53,6 @@ function processTweet(tweet, collection) {
 }
 
 function adjustCollectionRate() {
-    var apiWindow = 15 * 60;
-    var maxRequests = 170;
 
     var pollLength = (apiWindow / maxRequests) * collectors.length;
 
@@ -69,9 +69,11 @@ function saveTweets(tweets, collection) {
     });
 }
 
-function add(collection) {
+function add(collection, delay) {
     var c = new collector(twit, collection, saveTweets, handleError);
-    c.start();
+    setTimeout(function() {
+        c.start();
+    }, delay || 0);
     collectors.push(c);
     adjustCollectionRate();
 }
@@ -93,7 +95,12 @@ function remove(id) {
 function start() {
     Collection.find(function(err, collections) {
         if (err) throw "Failed to find collections";
-        _.each(collections, add);
+
+        var pollLength = (apiWindow / maxRequests) * collections.length;
+
+        _.each(collections, function(collection, i) {
+            add(collection, i * pollLength * 1000);
+        });
     });
 }
 
