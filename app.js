@@ -6,8 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var collectors = require('./twitter/collectors');
+var passport = require('passport');
+var authController = require('./auth');
 
 var app = express();
+
+// Set up auth
+app.use(passport.initialize());
 
 // Set up mongoose
 var mongo = process.env.MONGODB;
@@ -41,6 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Bind routes
 app.use('/api/collections/', require('./routes/api/collections'));
+app.use('/api/users/', require('./routes/api/users'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

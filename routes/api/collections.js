@@ -6,6 +6,7 @@ var Collection = require('../../models/Collection');
 var Tweet = require('../../models/Tweet');
 var ObjectId = mongoose.Types.ObjectId;
 var async = require('async');
+var auth = require('../../auth');
 
 var router = express.Router();
 
@@ -42,11 +43,11 @@ function sendCollections(res) {
     Collection.find({}, handle(res.json.bind(res), unknownError(res)));
 }
 
-router.get('/', function(req, res) {
+router.get('/', auth.isAuthenticated, function(req, res) {
     sendCollections(res);
 });
 
-router.post('/', function(req, res) {
+router.post('/', auth.isAuthenticated, function(req, res) {
 
     var newCollection = new Collection(req.body);
 
@@ -58,7 +59,7 @@ router.post('/', function(req, res) {
     newCollection.save(handle(success, unknownError(res)));
 });
 
-router.get('/:id', function(req, res) {
+router.get('/:id', auth.isAuthenticated, function(req, res) {
     var id = req.params.id;
 
     var tasks = {
@@ -140,7 +141,7 @@ function createGeoJson(tweets) {
     };
 }
 
-router.get('/:id/geojson', function(req, res) {
+router.get('/:id/geojson', auth.isAuthenticated, function(req, res) {
 
     var success = _.compose(res.json.bind(res), createGeoJson);
 
@@ -159,7 +160,7 @@ function createCountyLookup(counties) {
     return lookup;
 }
 
-router.get('/:id/counties', function(req, res) {
+router.get('/:id/counties', auth.isAuthenticated, function(req, res) {
 
     var success = _.compose(res.json.bind(res), createCountyLookup);
 
@@ -177,7 +178,7 @@ router.get('/:id/counties', function(req, res) {
     }], handle(success, unknownError(res)));
 });
 
-router.put('/:id', function(req, res) {
+router.put('/:id', auth.isAuthenticated, function(req, res) {
 
     var success = function(updated) {
 
@@ -192,7 +193,7 @@ router.put('/:id', function(req, res) {
     Collection.findByIdAndUpdate(req.params.id, req.body, handle(success, unknownError(res)));
 });
 
-router.delete('/:id', function(req, res) {
+router.delete('/:id', auth.isAuthenticated, function(req, res) {
 
     var id = req.params.id;
 
