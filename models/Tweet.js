@@ -6,10 +6,7 @@ var schema = new mongoose.Schema({
     lat: Number,
     lng: Number,
     created_at: Date,
-    id_str: {
-        type: String,
-        unique: true
-    },
+    id_str: String,
     collection_id: mongoose.Schema.Types.ObjectId,
     county_id: String,
     __v: {
@@ -21,6 +18,13 @@ var schema = new mongoose.Schema({
 schema.index({
     collection_id: 1,
     county_id: 1
+});
+
+schema.index({
+    id_str: 1,
+    collection_id: 1
+}, {
+    unique: true
 });
 
 schema.index({

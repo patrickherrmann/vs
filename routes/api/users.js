@@ -15,7 +15,7 @@ router.post('/', function(req, res) {
             res.send(err);
 
         res.json({
-            message: 'Created user' + user.username
+            message: 'Created user "' + user.username + '"'
         });
     });
 });
