@@ -26,7 +26,6 @@ vsControllers.controller('CollectionDetailCtrl', ['$scope', '$http', '$routePara
     var getDetails = $http.get('/api/collections/' + $routeParams.collectionId);
     getDetails.then(function(payload) {
         $scope.collection = payload.data;
-        drawBrowseMap();
     });
 
     var getCounties = $http.get('/api/collections/' + $routeParams.collectionId + '/counties');
@@ -186,15 +185,15 @@ vsControllers.controller('VsCtrl', ['$scope', '$http', '$q', function($scope, $h
     });
 
     var gradient = createGradient([
-        one.color('#02f'),
-        one.color('#ccc'),
-        one.color('#f20')
+        one.color('#00f'),
+        one.color('#f00')
     ]);
 
     function createColoration(as, bs, k) {
         return function(counties) {
 
             var max = null;
+            var maxTotal = 0;
             var mapping = {};
 
             $.each(counties, function(i, county) {
@@ -205,30 +204,46 @@ vsControllers.controller('VsCtrl', ['$scope', '$http', '$q', function($scope, $h
                 if (!b) b = 0;
 
                 var diff = b - a;
+                var total = b + a;
                 var magn = Math.abs(diff);
 
                 if (!max || magn > max) {
                     max = magn;
                 }
 
-                mapping[county.id] = diff;
+                if (total > maxTotal) {
+                    maxTotal = total;
+                }
+
+                mapping[county.id] = {
+                    diff: diff,
+                    total: total
+                };
             });
 
             return function(id) {
                 var v;
+                var s;
 
-                if (max) {
-                    v = mapping[id];
-                    v = v / max;
+                if (max && maxTotal > 0) {
+                    v = mapping[id].diff;
+                    v /= max;
                     var magn = Math.abs(v);
                     var sign = v < 0 ? -1 : 1;
                     v = sign * Math.pow(magn, k);
                     v = v * 0.5 + 0.5;
+                    s = mapping[id].total;
+                    s /= maxTotal;
+                    s = Math.pow(s, k);
                 } else {
                     v = 0.5;
+                    s = 0;
                 }
 
-                return gradient(v).hex();
+                return gradient(v)
+                    .lightness(-s * 0.2 + 0.5)
+                    .saturation(s)
+                    .hex();
             };
         };
     }
