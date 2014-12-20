@@ -225,18 +225,22 @@ vsControllers.controller('VsCtrl', ['$scope', '$http', '$q', function($scope, $h
                 var v;
                 var s;
 
-                if (max && maxTotal > 0) {
+                if (max) {
                     v = mapping[id].diff;
                     v /= max;
                     var magn = Math.abs(v);
                     var sign = v < 0 ? -1 : 1;
                     v = sign * Math.pow(magn, k);
                     v = v * 0.5 + 0.5;
+                } else {
+                    v = 0.5;
+                }
+
+                if (maxTotal > 0) {
                     s = mapping[id].total;
                     s /= maxTotal;
                     s = Math.pow(s, k);
                 } else {
-                    v = 0.5;
                     s = 0;
                 }
 
