@@ -241,7 +241,7 @@ vsControllers.controller('VsCtrl', ['$scope', '$http', '$q', function($scope, $h
                 }
 
                 return gradient(v)
-                    .lightness(-s * 0.2 + 0.5)
+                    .lightness(-s * 0.4 + 0.8)
                     .saturation(s)
                     .hex();
             };
@@ -251,7 +251,9 @@ vsControllers.controller('VsCtrl', ['$scope', '$http', '$q', function($scope, $h
 
     $scope.drawMap = function() {
         var coloration = createColoration($scope.leftCounties, $scope.rightCounties, $scope.k);
-        $scope.map.draw({}, coloration);
+        $scope.map.draw({
+            countyStroke: '#aaa'
+        }, coloration);
     };
 
     $scope.changeLeft = function() {

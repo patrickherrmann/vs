@@ -4,8 +4,8 @@
     text-overflow: ellipsis;
 }
 #left-select {
-    box-shadow: 0 0 3px #02f;
+    box-shadow: 0 0 3px #00f;
 }
 #right-select {
-    box-shadow: 0 0 3px #f20;
+    box-shadow: 0 0 3px #f00;
 }
